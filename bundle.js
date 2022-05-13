@@ -1586,7 +1586,7 @@ var CanvasManager = function (_Html) {
         _this.state.frames = [];
         _this.state.currentFrame = 0;
 
-        _this.bgImg = $('<img src="./Assets/Tiling Grass.png" />');
+        _this.bgImg = $('<img src="./assets/Tiling Grass.png" />');
         _this.bgImg.on('load', function () {
             _this.ready = true;_this.RedrawLoop();
         });

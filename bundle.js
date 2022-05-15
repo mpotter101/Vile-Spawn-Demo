@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,117 +70,42 @@
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
+var _App = __webpack_require__(8);
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _App2 = _interopRequireDefault(_App);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/*
-
-    Stores basic information that all html components use
-
-*/
-
-var Html = function () {
-    function Html(config) {
-        _classCallCheck(this, Html);
-
-        if (!config) {
-            config = {};
+// Create the App
+// Pass in schema for app here
+window.VileSpawn = new _App2.default({
+    stageQuerySelector: "#stage",
+    canvasHeight: 512,
+    canvasWidth: 512,
+    keywords: ['beast', 'humanoid', 'fur', 'claws', 'quadroped', 'wings', 'undead', 'construct', 'aquatic', 'scales'],
+    animationCategories: {
+        'Idle': {
+            'idle-right': {},
+            'idle-left': {},
+            '(idle-right-back)': { optional: true },
+            '(idle-left-back)': { optional: true }
+        },
+        'Movement': {
+            'walk-right': { scrollDir: 'right' },
+            'walf-left': { scrollDir: 'left' },
+            '(walk-right-back)': { scrollDir: 'down right', optional: true },
+            '(walk-left-back)': { scrollDir: 'down left', optional: true }
+        },
+        'Combat': {
+            'basic-attack': {},
+            'cast-ability': {},
+            'hurt': {},
+            '(knockedout-start)': { optional: true },
+            'knockedout-loop': {}
         }
-        this._config = config;
-
-        config = this.setConfigDefaults({
-            parent: document.body
-        });
-
-        this.template = '<div></div>';
-        this.node = $(this.template);
-        this.parent = $(config.parent);
-        this.attr = {};
-        this.prop = {};
-        this.css = {};
-        this.class = '';
     }
-
-    _createClass(Html, [{
-        key: 'assignConfig',
-        value: function assignConfig(config) {
-            Object.assign(this, config);
-        }
-    }, {
-        key: '_render',
-        value: function _render(parent) {
-            if (this._rendered) {
-                console.warn('Element tried to render more than once.');console.trace();
-                return;
-            }
-
-            // convert template html into a node
-            this.node = $(this.template);
-
-            // assign attributes
-            // Attributes are assigned first since they must be strings
-            this.node.attr(this.attr);
-
-            // assign properties
-            // prop and attr can assign the same things to an element,
-            // but prop allows for non-string values.
-            this.node.prop(this.prop);
-
-            // Apply inline styling
-            this.node.css(this.css);
-
-            // add styling classes
-            this.node.addClass(this.class);
-
-            // Append object to parent
-            this.parent.append(this.node[0]);
-
-            this._rendered = true;
-        }
-    }, {
-        key: 'render',
-        value: function render(parent) {
-            this._render(parent);
-        }
-    }, {
-        key: 'renderToParent',
-        value: function renderToParent() {
-            this.render(this.parent);
-        }
-    }, {
-        key: 'setConfigDefaults',
-        value: function setConfigDefaults(defaults, assign) {
-            var config = void 0,
-                item = void 0,
-                key = void 0;
-
-            config = this._config;
-
-            if (!config) {
-                config = {};
-            }
-
-            for (key in defaults) {
-                item = defaults[key];
-
-                if (!(key in config)) {
-                    config[key] = item;
-                }
-            }
-
-            return config;
-        }
-    }]);
-
-    return Html;
-}();
-
-exports.default = Html;
+}); // import files needed here
+//import App from './Kitchen-Sink'
 
 /***/ }),
 /* 1 */
@@ -314,7 +239,126 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _HTML = __webpack_require__(0);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/*
+
+    Stores basic information that all html components use
+
+*/
+
+var Html = function () {
+    function Html(config) {
+        _classCallCheck(this, Html);
+
+        if (!config) {
+            config = {};
+        }
+        this._config = config;
+
+        config = this.setConfigDefaults({
+            parent: document.body
+        });
+
+        this.template = '<div></div>';
+        this.node = $(this.template);
+        this.parent = $(config.parent);
+        this.attr = {};
+        this.prop = {};
+        this.css = {};
+        this.class = '';
+    }
+
+    _createClass(Html, [{
+        key: 'assignConfig',
+        value: function assignConfig(config) {
+            Object.assign(this, config);
+        }
+    }, {
+        key: '_render',
+        value: function _render(parent) {
+            if (this._rendered) {
+                console.warn('Element tried to render more than once.');console.trace();
+                return;
+            }
+
+            // convert template html into a node
+            this.node = $(this.template);
+
+            // assign attributes
+            // Attributes are assigned first since they must be strings
+            this.node.attr(this.attr);
+
+            // assign properties
+            // prop and attr can assign the same things to an element,
+            // but prop allows for non-string values.
+            this.node.prop(this.prop);
+
+            // Apply inline styling
+            this.node.css(this.css);
+
+            // add styling classes
+            this.node.addClass(this.class);
+
+            // Append object to parent
+            this.parent.append(this.node[0]);
+
+            this._rendered = true;
+        }
+    }, {
+        key: 'render',
+        value: function render(parent) {
+            this._render(parent);
+        }
+    }, {
+        key: 'renderToParent',
+        value: function renderToParent() {
+            this.render(this.parent);
+        }
+    }, {
+        key: 'setConfigDefaults',
+        value: function setConfigDefaults(defaults, assign) {
+            var config = void 0,
+                item = void 0,
+                key = void 0;
+
+            config = this._config;
+
+            if (!config) {
+                config = {};
+            }
+
+            for (key in defaults) {
+                item = defaults[key];
+
+                if (!(key in config)) {
+                    config[key] = item;
+                }
+            }
+
+            return config;
+        }
+    }]);
+
+    return Html;
+}();
+
+exports.default = Html;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _HTML = __webpack_require__(1);
 
 var _HTML2 = _interopRequireDefault(_HTML);
 
@@ -407,7 +451,7 @@ var Label = function (_Html) {
 exports.default = Label;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -419,11 +463,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _HTML = __webpack_require__(0);
+var _HTML = __webpack_require__(1);
 
 var _HTML2 = _interopRequireDefault(_HTML);
 
-var _Label = __webpack_require__(2);
+var _Label = __webpack_require__(3);
 
 var _Label2 = _interopRequireDefault(_Label);
 
@@ -495,7 +539,7 @@ var Group = function (_Html) {
 exports.default = Group;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -507,7 +551,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _HTML = __webpack_require__(0);
+var _HTML = __webpack_require__(1);
 
 var _HTML2 = _interopRequireDefault(_HTML);
 
@@ -586,7 +630,7 @@ var Button = function (_Html) {
 exports.default = Button;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -598,7 +642,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _HTML = __webpack_require__(0);
+var _HTML = __webpack_require__(1);
 
 var _HTML2 = _interopRequireDefault(_HTML);
 
@@ -704,7 +748,7 @@ var Input = function (_Html) {
 exports.default = Input;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -716,7 +760,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _HTML = __webpack_require__(1);
+var _HTML = __webpack_require__(2);
 
 var _HTML2 = _interopRequireDefault(_HTML);
 
@@ -809,44 +853,6 @@ var Label = function (_Html) {
 exports.default = Label;
 
 /***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _App = __webpack_require__(8);
-
-var _App2 = _interopRequireDefault(_App);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// Create the App
-// Pass in schema for app here
-window.VileSpawn = new _App2.default({
-    stageQuerySelector: "#stage",
-    canvasHeight: 512,
-    canvasWidth: 512,
-    keywords: ['beast', 'humanoid', 'fur', 'claws', 'quadroped', 'wings', 'undead', 'construct', 'aquatic', 'scales'],
-    animations: {
-        'idle-right': {},
-        '(idle-right-back)': {},
-        'idle-left': {},
-        '(idle-left-back)': {},
-        'walk-right': { scrollDir: 'right' },
-        '(walk-right-back)': { scrollDir: 'down right' },
-        'walf-left': { scrollDir: 'left' },
-        '(walk-left-back)': { scrollDir: 'down left' },
-        'basic-attack': {},
-        'cast-ability': {},
-        'hurt': {},
-        '(knockedout-start)': {},
-        'knockedout-loop': {}
-    }
-}); // import files needed here
-//import App from './Kitchen-Sink'
-
-/***/ }),
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -867,7 +873,7 @@ var _Tabber = __webpack_require__(9);
 
 var _Tabber2 = _interopRequireDefault(_Tabber);
 
-var _Group = __webpack_require__(3);
+var _Group = __webpack_require__(4);
 
 var _Group2 = _interopRequireDefault(_Group);
 
@@ -886,12 +892,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var App = function () {
     function App(_ref) {
         var stageQuerySelector = _ref.stageQuerySelector,
-            animations = _ref.animations,
+            animationCategories = _ref.animationCategories,
             canvasHeight = _ref.canvasHeight,
             canvasWidth = _ref.canvasWidth,
             keywords = _ref.keywords;
 
         _classCallCheck(this, App);
+
+        this.const = {};
+        this.const.CANVAS_HEIGHT = canvasHeight;
+        this.const.CANVAS_WIDTH = canvasWidth;
 
         this.groups = {
             about: new _Group2.default({
@@ -916,36 +926,81 @@ var App = function () {
 
         this.groups.about.addContent(this.aboutForm.node);
 
-        this.animations = animations;
-        this.animationNames = [];
+        this.animationCategoriesNames = Object.keys(animationCategories);
 
-        for (var key in this.animations) {
-            this.animationNames.push(key);
-        }
-
-        this.tabber = new _Tabber2.default({
-            parent: $(document.body),
-            tabs: this.animationNames
-        });
-
-        this.groups.animation.addContent(this.tabber.node);
-
+        this.animations = {};
         this.animationForms = {};
 
-        for (var key in this.animations) {
-            var item = this.animations[key];
-            this.animationForms[key] = new _AnimationForm2.default({
-                parent: $(document.body),
-                frameCount: 5,
-                frameDuration: 100,
-                canvasHeight: canvasHeight, canvasWidth: canvasWidth,
-                scrollDir: item.scrollDir
+        this.animationCategoryTabber = new _Tabber2.default({
+            parent: $(document.body),
+            tabs: this.animationCategoriesNames
+        });
+
+        var item, targetTabIndex;
+        for (var key in animationCategories) {
+            item = animationCategories[key];
+
+            this.CreateAnimationsTabberForCategory({
+                categoryName: key,
+                category: item
             });
-            this.tabber.addContent(this.tabber.getTabIndexByName(key), this.animationForms[key].node);
         }
+
+        this.groups.animation.addContent(this.animationCategoryTabber.node);
     }
 
     _createClass(App, [{
+        key: 'CreateAnimationsTabberForCategory',
+        value: function CreateAnimationsTabberForCategory(_ref2) {
+            var category = _ref2.category,
+                categoryName = _ref2.categoryName;
+
+            var targetTabIndex = this.animationCategoryTabber.getTabIndexByName(categoryName);
+
+            this.animations[categoryName + 'Tabber'] = new _Tabber2.default({
+                parent: $(document.body),
+                tabs: Object.keys(category)
+            });
+
+            this.animationCategoryTabber.addContent(targetTabIndex, this.animations[categoryName + 'Tabber'].node);
+
+            this.CreateAnimationFormsForCategory({
+                category: category,
+                categoryName: categoryName,
+                parentTabber: this.animations[categoryName + 'Tabber']
+            });
+        }
+    }, {
+        key: 'CreateAnimationFormsForCategory',
+        value: function CreateAnimationFormsForCategory(_ref3) {
+            var category = _ref3.category,
+                categoryName = _ref3.categoryName,
+                parentTabber = _ref3.parentTabber;
+
+            var item;
+            for (var key in category) {
+                item = category[key];
+
+                var formName = categoryName + '-' + key;
+                this.animationForms[formName] = new _AnimationForm2.default({
+                    parent: $(document.body),
+                    frameCount: 5,
+                    frameDuration: 100,
+                    canvasHeight: this.const.CANVAS_HEIGHT,
+                    canvasWidth: this.const.CANVAS_WIDTH,
+                    scrollDir: item.scrollDir
+                });
+
+                var targetTabIndex = parentTabber.getTabIndexByName(key);
+
+                parentTabber.addContent(targetTabIndex, this.animationForms[formName].node);
+
+                if (item.optional) {
+                    parentTabber.tabs[targetTabIndex].node.addClass('optional');
+                }
+            }
+        }
+    }, {
         key: 'CollectStateData',
         value: function CollectStateData() {
             var _this = this;
@@ -954,7 +1009,7 @@ var App = function () {
             data.about = this.aboutForm.GetState();
             data.animation = {};
 
-            this.animationNames.forEach(function (name) {
+            Object.keys(this.animationForms).forEach(function (name) {
                 data.animation[name] = _this.animationForms[name].GetState();
             });
 
@@ -980,15 +1035,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _HTML = __webpack_require__(0);
+var _HTML = __webpack_require__(1);
 
 var _HTML2 = _interopRequireDefault(_HTML);
 
-var _Button = __webpack_require__(4);
+var _Button = __webpack_require__(5);
 
 var _Button2 = _interopRequireDefault(_Button);
 
-var _Group = __webpack_require__(3);
+var _Group = __webpack_require__(4);
 
 var _Group2 = _interopRequireDefault(_Group);
 
@@ -1060,7 +1115,8 @@ var Tabber = function (_Html) {
                 name: item,
                 button: tabButton,
                 content: tabContent,
-                index: index
+                index: index,
+                node: tabButton.node
             });
         });
 
@@ -1170,11 +1226,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _HTML = __webpack_require__(0);
+var _HTML = __webpack_require__(1);
 
 var _HTML2 = _interopRequireDefault(_HTML);
 
-var _Button = __webpack_require__(4);
+var _Button = __webpack_require__(5);
 
 var _Button2 = _interopRequireDefault(_Button);
 
@@ -1182,7 +1238,7 @@ var _CanvasManager = __webpack_require__(11);
 
 var _CanvasManager2 = _interopRequireDefault(_CanvasManager);
 
-var _Group = __webpack_require__(3);
+var _Group = __webpack_require__(4);
 
 var _Group2 = _interopRequireDefault(_Group);
 
@@ -1194,7 +1250,7 @@ var _InputSlider = __webpack_require__(15);
 
 var _InputSlider2 = _interopRequireDefault(_InputSlider);
 
-var _Label = __webpack_require__(2);
+var _Label = __webpack_require__(3);
 
 var _Label2 = _interopRequireDefault(_Label);
 
@@ -1844,7 +1900,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _HTML = __webpack_require__(0);
+var _HTML = __webpack_require__(1);
 
 var _HTML2 = _interopRequireDefault(_HTML);
 
@@ -1916,7 +1972,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _HTML = __webpack_require__(0);
+var _HTML = __webpack_require__(1);
 
 var _HTML2 = _interopRequireDefault(_HTML);
 
@@ -2083,11 +2139,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _HTML = __webpack_require__(0);
+var _HTML = __webpack_require__(1);
 
 var _HTML2 = _interopRequireDefault(_HTML);
 
-var _Input = __webpack_require__(5);
+var _Input = __webpack_require__(6);
 
 var _Input2 = _interopRequireDefault(_Input);
 
@@ -2095,7 +2151,7 @@ var _Slider = __webpack_require__(16);
 
 var _Slider2 = _interopRequireDefault(_Slider);
 
-var _Label = __webpack_require__(2);
+var _Label = __webpack_require__(3);
 
 var _Label2 = _interopRequireDefault(_Label);
 
@@ -2247,7 +2303,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _HTML = __webpack_require__(0);
+var _HTML = __webpack_require__(1);
 
 var _HTML2 = _interopRequireDefault(_HTML);
 
@@ -2355,15 +2411,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _HTML = __webpack_require__(0);
+var _HTML = __webpack_require__(1);
 
 var _HTML2 = _interopRequireDefault(_HTML);
 
-var _Input = __webpack_require__(5);
+var _Input = __webpack_require__(6);
 
 var _Input2 = _interopRequireDefault(_Input);
 
-var _Label = __webpack_require__(2);
+var _Label = __webpack_require__(3);
 
 var _Label2 = _interopRequireDefault(_Label);
 
@@ -2481,7 +2537,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _HTML = __webpack_require__(1);
+var _HTML = __webpack_require__(2);
 
 var _HTML2 = _interopRequireDefault(_HTML);
 
@@ -2601,7 +2657,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _HTML = __webpack_require__(1);
+var _HTML = __webpack_require__(2);
 
 var _HTML2 = _interopRequireDefault(_HTML);
 
@@ -2609,7 +2665,7 @@ var _Input = __webpack_require__(20);
 
 var _Input2 = _interopRequireDefault(_Input);
 
-var _Label = __webpack_require__(6);
+var _Label = __webpack_require__(7);
 
 var _Label2 = _interopRequireDefault(_Label);
 
@@ -2727,7 +2783,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _HTML = __webpack_require__(1);
+var _HTML = __webpack_require__(2);
 
 var _HTML2 = _interopRequireDefault(_HTML);
 
@@ -2845,11 +2901,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _HTML = __webpack_require__(1);
+var _HTML = __webpack_require__(2);
 
 var _HTML2 = _interopRequireDefault(_HTML);
 
-var _Label = __webpack_require__(6);
+var _Label = __webpack_require__(7);
 
 var _Label2 = _interopRequireDefault(_Label);
 

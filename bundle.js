@@ -825,9 +825,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Pass in schema for app here
 window.VileSpawn = new _App2.default({
     stageQuerySelector: "#stage",
+    exportFileName: "entity-animation-data.json",
     canvasHeight: 512,
     canvasWidth: 512,
-    keywords: ['beast', 'humanoid', 'fur', 'claws', 'quadroped', 'wings', 'undead', 'construct', 'aquatic', 'scales'],
+    defaultFrameDuration: 200,
+    background: {
+        scrollSpeed: 3.3
+    },
     animationCategories: {
         'Idle': {
             'face-right': {},
@@ -836,8 +840,8 @@ window.VileSpawn = new _App2.default({
             'face-left-away': { optional: true }
         },
         'Movement': {
-            'face-right': { scrollDir: 'right' },
-            'face-left': { scrollDir: 'left' },
+            'face-right': { scrollDir: 'right up' },
+            'face-left': { scrollDir: 'left up' },
             'face-right-away': { scrollDir: 'down right', optional: true },
             'face-left-away': { scrollDir: 'down left', optional: true }
         },
@@ -902,36 +906,34 @@ var App = function () {
         var _this = this;
 
         var stageQuerySelector = _ref.stageQuerySelector,
+            headerQuerySelector = _ref.headerQuerySelector,
             animationCategories = _ref.animationCategories,
             canvasHeight = _ref.canvasHeight,
             canvasWidth = _ref.canvasWidth,
-            keywords = _ref.keywords;
+            defaultFrameDuration = _ref.defaultFrameDuration,
+            background = _ref.background,
+            exportFileName = _ref.exportFileName;
 
         _classCallCheck(this, App);
 
         this.const = {};
         this.const.CANVAS_HEIGHT = canvasHeight;
         this.const.CANVAS_WIDTH = canvasWidth;
+        this.const.DEFAULT_FRAME_DURATION = defaultFrameDuration;
+        this.const.EXPORT_FILE_NAME = exportFileName;
 
         this.groups = {
-            data: new _Group2.default({
-                parent: $(stageQuerySelector),
-                class: 'ui segment group data-area',
-                label: {
-                    content: 'Save/Load'
-                }
-            }),
-            about: new _Group2.default({
-                class: 'ui segment group about-form',
-                parent: $(stageQuerySelector),
-                label: {
-                    content: 'About Your Character'
-                }
-            }),
             animation: new _Group2.default({
                 parent: $(stageQuerySelector),
                 label: {
                     content: 'Animations'
+                }
+            }),
+            data: new _Group2.default({
+                parent: $("#footer-bar"),
+                class: 'ui segment group data-area',
+                label: {
+                    content: 'Save/Load'
                 }
             })
         };
@@ -962,13 +964,6 @@ var App = function () {
         this.groups.data.addContent(this.exportButton.node);
         this.groups.data.addContent(this.importButton.node);
 
-        this.aboutForm = new _AboutForm2.default({
-            parent: $(document.body),
-            keywords: keywords
-        });
-
-        this.groups.about.addContent(this.aboutForm.node);
-
         this.animationCategoriesNames = Object.keys(animationCategories);
 
         this.animationTabbers = {};
@@ -985,7 +980,8 @@ var App = function () {
 
             this.CreateAnimationsTabberForCategory({
                 categoryName: key,
-                category: item
+                category: item,
+                background: background
             });
         }
 
@@ -996,7 +992,8 @@ var App = function () {
         key: 'CreateAnimationsTabberForCategory',
         value: function CreateAnimationsTabberForCategory(_ref2) {
             var category = _ref2.category,
-                categoryName = _ref2.categoryName;
+                categoryName = _ref2.categoryName,
+                background = _ref2.background;
 
             var targetTabIndex = this.animationCategoryTabber.getTabIndexByName(categoryName);
 
@@ -1010,6 +1007,7 @@ var App = function () {
             this.CreateAnimationFormsForCategory({
                 category: category,
                 categoryName: categoryName,
+                background: background,
                 parentTabber: this.animationTabbers[categoryName]
             });
         }
@@ -1018,7 +1016,8 @@ var App = function () {
         value: function CreateAnimationFormsForCategory(_ref3) {
             var category = _ref3.category,
                 categoryName = _ref3.categoryName,
-                parentTabber = _ref3.parentTabber;
+                parentTabber = _ref3.parentTabber,
+                background = _ref3.background;
 
             this.animationForms[categoryName] = {};
 
@@ -1029,10 +1028,11 @@ var App = function () {
                 this.animationForms[categoryName][key] = new _AnimationForm2.default({
                     parent: $(document.body),
                     categoryName: categoryName,
+                    background: background,
                     name: key,
                     optional: item.optional,
                     frameCount: 5,
-                    frameDuration: 100,
+                    frameDuration: this.const.DEFAULT_FRAME_DURATION,
                     canvasHeight: this.const.CANVAS_HEIGHT,
                     canvasWidth: this.const.CANVAS_WIDTH,
                     scrollDir: item.scrollDir
@@ -1053,7 +1053,6 @@ var App = function () {
             var _this2 = this;
 
             var data = {};
-            data.about = this.aboutForm.GetState();
             data.animationCategories = {};
 
             Object.keys(this.animationTabbers).forEach(function (name) {
@@ -1078,7 +1077,6 @@ var App = function () {
             var json = JSON.parse(data.value);
 
             // about form
-            this.aboutForm.ImportData(json.about);
             Object.keys(json.animationCategories).forEach(function (categoryName) {
                 Object.keys(json.animationCategories[categoryName]).forEach(function (animationName) {
                     console.log(_this3.animationForms);
@@ -1091,7 +1089,7 @@ var App = function () {
         key: 'ExportData',
         value: function ExportData() {
             var data = this.CollectStateData();
-            var name = data.about.name + "-game-data.json";
+            var name = this.const.EXPORT_FILE_NAME;
             var jsonFileContent = JSON.stringify(data, null, 4);
             this.Download(jsonFileContent, name, "text/plain");
         }
@@ -1463,7 +1461,8 @@ var AnimationForm = function (_Html) {
             scrollDir = _ref.scrollDir,
             optional = _ref.optional,
             name = _ref.name,
-            categoryName = _ref.categoryName;
+            categoryName = _ref.categoryName,
+            background = _ref.background;
 
         _classCallCheck(this, AnimationForm);
 
@@ -1480,6 +1479,7 @@ var AnimationForm = function (_Html) {
         _this.const = {};
         _this.const.FRAME_DURATION_LABEL = 'Duration(ms)';
         _this.const.IMG_SIZE = 256;
+        _this.const.TIP_MULTIPLE_FRAME_UPLOAD = "You can upload multiple frames by shift clicking images. Frame count will be adjusted automatically.";
 
         _this.groups = {
             canvas: new _Group2.default({
@@ -1509,7 +1509,8 @@ var AnimationForm = function (_Html) {
             parent: _this.node,
             height: canvasHeight, width: canvasWidth,
             imgSize: _this.const.IMG_SIZE,
-            scrollDir: scrollDir
+            scrollDir: scrollDir,
+            background: background
         });
 
         _this.groups.canvas.addContent(_this.canvasManager.node);
@@ -1559,6 +1560,12 @@ var AnimationForm = function (_Html) {
 
         _this.imageLoader.node.prop('multiple', 'multiple');
 
+        _this.tipMultiUploadLabel = new _Label2.default({
+            parent: _this.node,
+            class: "ui tip label",
+            content: _this.const.TIP_MULTIPLE_FRAME_UPLOAD
+        });
+
         _this.uploadFrameButton = new _Button2.default({
             parent: _this.node,
             label: 'Upload Frames',
@@ -1588,6 +1595,7 @@ var AnimationForm = function (_Html) {
         _this.groups.form.addContent(_this.maxFrameCountInput.node);
         _this.groups.form.addContent(_this.frameSelector.node);
         _this.groups.form.addContent(_this.frameDurationInput.node);
+        _this.groups.form.addContent(_this.tipMultiUploadLabel.node);
         _this.groups.form.addContent(_this.uploadFrameButton.node);
         _this.groups.form.addContent(_this.playPauseButton.node);
         return _this;
@@ -1864,6 +1872,7 @@ var CanvasManager = function (_Html) {
             height = _ref.height,
             width = _ref.width,
             imgSize = _ref.imgSize,
+            background = _ref.background,
             _ref$scrollDir = _ref.scrollDir,
             scrollDir = _ref$scrollDir === undefined ? '' : _ref$scrollDir;
 
@@ -1876,7 +1885,8 @@ var CanvasManager = function (_Html) {
         _this.const.HALF_WIDTH = width / 2;
         _this.const.IMG_SIZE = imgSize;
         _this.const.HALF_IMG_SIZE = imgSize / 2;
-        _this.const.FRAME_RATE = 1000 / 30;
+        _this.const.FRAME_RATE = 1000 / 60;
+        _this.const.SCROLL_SPEED = background.scrollSpeed;
 
         _this.canvas = new _Canvas2.default({
             parent: _this.node,
@@ -1889,18 +1899,42 @@ var CanvasManager = function (_Html) {
         _this.state.frames = [];
         _this.state.currentFrame = 0;
 
-        _this.bgImg = $('<img src="./assets/Tiling Grass.png" />');
-        _this.bgImg.on('load', function () {
-            _this.ready = true;_this.RedrawLoop();
-        });
-        _this.bgImgPos = { x: 0, y: 0 };
-        _this.bgImgSpeed = 4;
         _this.scrolling = true;
         _this.scrollDir = scrollDir;
+        _this.bgImg = $('<img src="./assets/Tiling Grid.png" />');
+        _this.bgImg.on('load', function () {
+            _this.GetBgImageDimensions();
+        });
         return _this;
     }
 
     _createClass(CanvasManager, [{
+        key: 'GetBgImageDimensions',
+        value: function GetBgImageDimensions() {
+            var _this2 = this;
+
+            this.bgImgWidth = this.bgImg[0].naturalWidth;
+            this.bgImgHeight = this.bgImg[0].naturalHeight;
+
+            if (this.bgImgHeight == 0 && this.bgImgWidth == 0) {
+                window.setTimeout(function () {
+                    _this2.GetBgImageDimensions();
+                }, 50);
+            } else {
+                this.bgAspect = this.bgImgHeight / this.bgImgWidth;
+                this.bgImgPos = {
+                    x: this.bgImgWidth / 4 + 35,
+                    y: -this.bgImgHeight / 3 + this.const.HEIGHT
+                };
+                this.bgImgSpeed = {
+                    x: this.const.SCROLL_SPEED,
+                    y: this.const.SCROLL_SPEED * this.bgAspect
+                };
+                this.ready = true;
+                this.RedrawLoop();
+            }
+        }
+    }, {
         key: 'SetImage',
         value: function SetImage(_ref2) {
             var index = _ref2.index,
@@ -1914,14 +1948,14 @@ var CanvasManager = function (_Html) {
     }, {
         key: 'RedrawLoop',
         value: function RedrawLoop() {
-            var _this2 = this;
+            var _this3 = this;
 
             if (this.scrolling) {
                 this.ScrollBg();
                 this.RedrawScene();
 
                 window.setTimeout(function () {
-                    _this2.RedrawLoop();
+                    _this3.RedrawLoop();
                 }, this.const.FRAME_RATE);
             }
         }
@@ -1929,26 +1963,26 @@ var CanvasManager = function (_Html) {
         key: 'ScrollBg',
         value: function ScrollBg() {
             if (this.scrollDir.indexOf('right') != -1) {
-                this.bgImgPos.x -= this.bgImgSpeed;
+                this.bgImgPos.x -= this.bgImgSpeed.x;
             }
 
             if (this.scrollDir.indexOf('left') != -1) {
-                this.bgImgPos.x += this.bgImgSpeed;
+                this.bgImgPos.x += this.bgImgSpeed.x;
             }
 
             if (this.scrollDir.indexOf('down') != -1) {
-                this.bgImgPos.y += this.bgImgSpeed;
+                this.bgImgPos.y += this.bgImgSpeed.y;
             }
 
             if (this.scrollDir.indexOf('up') != -1) {
-                this.bgImgPos.y -= this.bgImgSpeed;
+                this.bgImgPos.y -= this.bgImgSpeed.y;
             }
 
-            if (this.bgImgPos.x <= -this.const.WIDTH || this.bgImgPos.x >= this.const.WIDTH) {
+            if (this.bgImgPos.x <= -this.bgImgWidth || this.bgImgPos.x >= this.bgImgWidth) {
                 this.bgImgPos.x = 0;
             }
 
-            if (this.bgImgPos.y <= -this.const.HEIGHT || this.bgImgPos.y >= this.const.HEIGHT) {
+            if (this.bgImgPos.y <= -this.bgImgHeight || this.bgImgPos.y >= this.bgImgHeight) {
                 this.bgImgPos.y = 0;
             }
         }
@@ -1972,29 +2006,32 @@ var CanvasManager = function (_Html) {
             // center img
             this.ctx.drawImage(this.bgImg[0], this.bgImgPos.x, this.bgImgPos.y);
 
+            // Helds remove grid lines between images
+            var alignmentBuffer = 1;
+
             // center right img
-            this.ctx.drawImage(this.bgImg[0], this.bgImgPos.x + this.const.WIDTH, this.bgImgPos.y);
+            this.ctx.drawImage(this.bgImg[0], this.bgImgPos.x + this.bgImgWidth - alignmentBuffer, this.bgImgPos.y);
 
             // center top img
-            this.ctx.drawImage(this.bgImg[0], this.bgImgPos.x, this.bgImgPos.y - this.const.HEIGHT);
+            this.ctx.drawImage(this.bgImg[0], this.bgImgPos.x, this.bgImgPos.y - this.bgImgHeight + alignmentBuffer);
 
             // top right img
-            this.ctx.drawImage(this.bgImg[0], this.bgImgPos.x + this.const.WIDTH, this.bgImgPos.y - this.const.HEIGHT);
+            this.ctx.drawImage(this.bgImg[0], this.bgImgPos.x + this.bgImgWidth - alignmentBuffer, this.bgImgPos.y - this.bgImgHeight + alignmentBuffer);
 
             // center left
-            this.ctx.drawImage(this.bgImg[0], this.bgImgPos.x - this.const.WIDTH, this.bgImgPos.y);
+            this.ctx.drawImage(this.bgImg[0], this.bgImgPos.x - this.bgImgWidth + alignmentBuffer, this.bgImgPos.y);
 
             // center bottom img
-            this.ctx.drawImage(this.bgImg[0], this.bgImgPos.x, this.bgImgPos.y + this.const.HEIGHT);
+            this.ctx.drawImage(this.bgImg[0], this.bgImgPos.x, this.bgImgPos.y + this.bgImgHeight - alignmentBuffer);
 
             // bottom left img
-            this.ctx.drawImage(this.bgImg[0], this.bgImgPos.x - this.const.WIDTH, this.bgImgPos.y + this.const.HEIGHT);
+            this.ctx.drawImage(this.bgImg[0], this.bgImgPos.x - this.bgImgWidth + alignmentBuffer, this.bgImgPos.y + this.bgImgHeight - alignmentBuffer);
 
             // top left img
-            this.ctx.drawImage(this.bgImg[0], this.bgImgPos.x - this.const.WIDTH, this.bgImgPos.y - this.const.HEIGHT);
+            this.ctx.drawImage(this.bgImg[0], this.bgImgPos.x - this.bgImgWidth + alignmentBuffer, this.bgImgPos.y - this.bgImgHeight + alignmentBuffer);
 
             // bottom right img
-            this.ctx.drawImage(this.bgImg[0], this.bgImgPos.x + this.const.WIDTH, this.bgImgPos.y + this.const.HEIGHT);
+            this.ctx.drawImage(this.bgImg[0], this.bgImgPos.x + this.bgImgWidth - alignmentBuffer, this.bgImgPos.y + this.bgImgHeight - alignmentBuffer);
         }
     }, {
         key: 'GetFrameDuration',
